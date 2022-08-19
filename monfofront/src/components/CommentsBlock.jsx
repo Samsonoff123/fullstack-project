@@ -9,18 +9,18 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
 
-export const CommentsBlock = ({ items, children, isLoading = true }) => {
+export const CommentsBlock = ({ comments, children, isLoading = true }) => {
   return (
     <SideBlock title="Комментарии">
       <List>
-        {(isLoading ? [...Array(5)] : items).map((obj, index) => (
+      {(isLoading ? [...Array(5)] : comments).map((obj, index) => (
           <React.Fragment key={index}>
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
                 {isLoading ? (
                   <Skeleton variant="circular" width={40} height={40} />
                 ) : (
-                  <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
+                  <Avatar alt={obj.usrs.users.fullName} src={obj.usrs.users.avatarUrl} />
                 )}
               </ListItemAvatar>
               {isLoading ? (
@@ -30,7 +30,7 @@ export const CommentsBlock = ({ items, children, isLoading = true }) => {
                 </div>
               ) : (
                 <ListItemText
-                  primary={obj.user.fullName}
+                  primary={obj.usrs.users.fullName}
                   secondary={obj.text}
                 />
               )}

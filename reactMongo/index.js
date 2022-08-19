@@ -9,7 +9,7 @@ import { handleValidationErrors, checkAuth } from './utils/index.js'
 import {UserController, PostController} from './controllers/index.js'
 
 
-mongoose.connect('mongodb+srv://admin:wwwwww@cluster0.gqttm.mongodb.net/blog?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://admin:wwwwww@cluster0.gqttm.mongodb.net/test?retryWrites=true&w=majority')
 .then(() => {console.log('DB ok');})
 .catch((err)=> {console.log('DB error', err);})
 
@@ -54,6 +54,8 @@ app.get('/posts/:id', PostController.getOne)
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create)
 
 app.post('/posts/:id/comments', checkAuth, commentCreateValidation, handleValidationErrors, PostController.commentCreate)
+
+app.get('/posts/:id/comments', PostController.getComments)
 
 app.delete('/posts/:id', checkAuth, PostController.remove)
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update)

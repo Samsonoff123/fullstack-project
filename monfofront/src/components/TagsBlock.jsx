@@ -17,15 +17,17 @@ import { fetchPostsByTag } from "../redux/slices/posts";
 
 export const TagsBlock = ({ items, isLoading = true }) => {
   const dispatch = useDispatch()
+
   return (
     <SideBlock title="Тэги">
       <List>
-        {(isLoading ? [...Array(5)] : items).map((name, i) => (
+        {(isLoading ? [...Array(5)] : items).map((name, id) => (
           <div
             style={{ textDecorLinktion: "none", color: "black" }}
             onClick={() => {dispatch(fetchPostsByTag(name))}}
+            key={id}
           >
-            <ListItem key={i} disablePadding>
+            <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <TagIcon />

@@ -1,5 +1,7 @@
 import PostModel from '../modules/Post.js'
+import jwt_decode from "jwt-decode";
 import CommentModel from '../modules/Comment.js'
+import UserModel from '../modules/User.js'
 import { postCreateValidation } from '../validations.js';
 
 export const getLastTags = async (req, res) => {
@@ -138,6 +140,7 @@ export const create = async (req, res) => {
             imageUrl: req.body.imageUrl,
             tags: req.body.tags,
             user: req.userId,
+            comments: {}
         })
 
         const post = await doc.save()
@@ -147,28 +150,6 @@ export const create = async (req, res) => {
         console.log(err);
         res.status(500).json({
             message: 'Не удалось создать статью'
-        })
-    }
-}
-
-export const commentCreate = async (req, res) => {
-    try {
-        const postId = req.params.id
-        await PostModel.findOneAndUpdate({
-            _id: postId,
-        },
-        {
-            text: req.body.text,
-            user: req.userId,
-        })
-
-        res.json({
-            success: true
-        })
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: 'Не удалось добавить комментарий'
         })
     }
 }
@@ -194,6 +175,51 @@ export const update = async (req, res) => {
         console.log(err);
         res.status(500).json({
             message: 'Не удалось обновить статью'
+        })
+    }
+}
+
+export const commentCreate = async (req, res) => {
+    try {
+        const doc = new CommentModel({
+            users: req.userId
+        }).populate('users')
+
+        const users = await doc
+        await PostModel.findOneAndUpdate({
+            _id: req.params.id,
+        },
+        {
+            $push:{comments: {
+                text: req.body.text,
+                usrs: {
+                    ...users
+                }
+            }},
+        },)
+
+
+        res.json({
+            success: true
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Не удалось создать комментарии'
+        })
+    }
+}
+
+export const getComments = async (req, res) => {
+    try {
+        let posts
+        posts = await CommentModel.find()
+
+        res.json(posts)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Не удалось получить комментарии'
         })
     }
 }
